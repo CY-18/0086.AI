@@ -328,17 +328,24 @@
     <!-- 5. Footer -->
     <footer class="py-32 bg-black text-white text-center px-4 relative overflow-hidden">
         <div class="max-w-4xl mx-auto relative z-10 reveal">
-            <h2 class="text-4xl md:text-7xl font-black mb-16 tracking-tight italic">在 AI 浪潮中 <br> <span class="text-brand-blue animate-pulse">共同进化</span></h2>
+            <h2 class="text-4xl md:text-7xl font-black mb-16 tracking-tight italic leading-tight">在 AI 浪潮中 <br> <span class="text-brand-blue animate-pulse">共同进化</span></h2>
+            
             <div class="w-full h-px bg-white/10 my-16"></div>
+            
+            <!-- 优化后的页脚品牌区 -->
             <div class="flex flex-col md:flex-row justify-between items-center gap-10">
-                <div class="flex flex-col md:flex-row items-center gap-6">
-                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-black font-black text-2xl shadow-xl shadow-white/5">00</div>
-                    <div class="text-center md:text-left">
-                        <div class="text-white font-bold tracking-widest text-lg uppercase">0086.AI</div>
-                        <div class="text-xs font-bold uppercase tracking-[0.3em] mt-1 text-slate-400">Building Smart, Growing Fast</div>
+                <div class="flex items-center gap-4 md:gap-6">
+                    <!-- 品牌图形与文字横向整合，避免内容重复与奇怪的堆叠感 -->
+                    <div class="w-10 h-10 md:w-14 md:h-14 bg-white rounded-xl md:rounded-2xl flex items-center justify-center text-black font-black text-lg md:text-2xl shadow-xl shadow-white/5 shrink-0">
+                        00
+                    </div>
+                    <div class="text-left leading-tight">
+                        <div class="text-white font-bold tracking-[0.15em] text-lg md:text-2xl uppercase">86.AI</div>
+                        <div class="text-[9px] md:text-xs font-bold uppercase tracking-[0.3em] mt-1 text-slate-400 whitespace-nowrap">Building Smart, Growing Fast</div>
                     </div>
                 </div>
-                <div class="text-[10px] font-black tracking-[0.5em] uppercase opacity-30">
+                
+                <div class="text-[10px] font-black tracking-[0.4em] md:tracking-[0.5em] uppercase opacity-30 text-center md:text-right">
                     © 2026 PRECISION DELIVERY SYSTEM. ALL RIGHTS RESERVED.
                 </div>
             </div>
