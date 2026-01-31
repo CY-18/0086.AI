@@ -6,18 +6,23 @@
     <title>0086.AI | 数字化业务介绍手册</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Alpine.js (用于实现交互逻辑，无需配置) -->
+    <!-- Alpine.js -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; scroll-behavior: smooth; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
         .bento-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .bento-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05); }
+        @media (min-width: 1024px) {
+            .bento-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05); }
+        }
         .terminal-window { box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.1); }
         [x-cloak] { display: none !important; }
+        /* 隐藏滚动条但保留功能 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-[#0F172A]" x-data="{ 
@@ -26,7 +31,7 @@
         strategy: {
             title: '战略罗盘',
             sub: '品牌战略咨询 Agent',
-            role: '老板的 AI 战略合伙人 (AI Co-Founder)',
+            role: '老板的 AI 战略合伙人',
             pain: '老板有直觉没逻辑，想法难以落地。',
             ability: '深度引导式对话，挖掘潜意识直觉，转化为清晰战略路线图。',
             icon: 'compass',
@@ -34,221 +39,197 @@
         },
         web: {
             title: '数字门面',
-            sub: '全栈智能官网 Agent',
-            role: 'AI 交互建站专家 (AI Web Architect)',
-            pain: '建站流程繁琐，模板千篇一律，缺乏营销转化力。',
-            ability: '自然语言交互生成国际化官网。支持一键部署与全周期智能维护，真正成为打开GEO大门的钥匙。',
+            sub: '智能官网 Agent',
+            role: 'AI 交互建站专家',
+            pain: '建站繁琐，模板单一，缺乏转化力。',
+            ability: '自然语言交互生成官网。支持一键部署与维护，开启全球引流大门。',
             icon: 'globe',
             color: 'indigo'
         },
         traffic: {
             title: '流量引擎',
-            sub: '营销内容生成 Agent',
+            sub: '营销内容 Agent',
             role: '爆款文案制造机',
-            pain: '品牌内容太严肃，不懂社媒“黑话”，传播效率低。',
-            ability: '实时“翻译”战略资料为极具传播力的神文案，批量生产高质量营销内容效率。',
+            pain: '内容严肃，不懂社媒“黑话”，传播低效。',
+            ability: '实时“翻译”战略资料为神文案，深谙全球社交平台流量密码。',
             icon: 'zap',
             color: 'orange'
         },
         training: {
             title: '组织战力',
-            sub: '内部培训内容生成 Agent',
-            role: '业务金牌培训师 (Master Trainer)',
-            pain: '销售/新员工不懂产品，培训资料滞后，战略无法转化为战斗力。',
-            ability: '基于业务真实案例，自动生成场景化的培训课件，快速拉齐团队认知。',
+            sub: '内训内容 Agent',
+            role: '业务金牌培训师',
+            pain: '新员工不懂产品，培训资料滞后。',
+            ability: '基于真实案例自动生成课件，快速复制销冠经验，拉齐团队认知。',
             icon: 'graduation-cap',
             color: 'emerald'
         },
         global: {
             title: '全球拓客',
-            sub: '海外客户搜索 Agent',
-            role: '外贸情报侦察兵 (Global Lead Scout)',
-            pain: '外贸获客大海捞针，客户信息不精准，背调效率低。',
+            sub: '海外搜索 Agent',
+            role: '外贸情报侦察兵',
+            pain: '获客大海捞针，信息不准，背调低效。',
             icon: 'search',
-            ability: '穿透全球公开数据，精准筛选高价值潜客信息，提供多维度背景画像。',
+            ability: '穿透全球公开数据，精准筛选高价值潜客，提供多维度背景画像。',
             color: 'purple'
         },
         design: {
             title: '创新加速',
             sub: '设计辅助 Agent',
-            role: '产品研发与视觉设计师',
-            pain: '新品研发周期长、开模成本高；营销物料缺乏设计感。',
-            ability: '侧重研发加速，快速生成产品概念设计图（如鞋服），缩短研发周期。',
+            role: '产品视觉设计师',
+            pain: '研发周期长、开模高；物料缺乏设计感。',
+            ability: '加速产品研发，快速生成概念设计图（如鞋服），缩短交付周期。',
             icon: 'palette',
             color: 'pink'
         }
     }
 }">
 
-    <!-- 1. Intro Section -->
-    <section id="intro" class="min-h-screen flex flex-col justify-center items-center px-6 text-center bg-white relative overflow-hidden">
+    <!-- 1. Intro Section (Mobile Optimized) -->
+    <section id="intro" class="min-h-screen flex flex-col justify-center items-center px-4 text-center bg-white relative overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(59,130,246,0.08),transparent)] pointer-events-none"></div>
-        <div class="max-w-4xl">
-            <div class="flex items-center gap-3 justify-center mb-10">
-                <div class="w-14 h-14 bg-black rounded-[1.25rem] flex items-center justify-center text-white font-bold text-3xl shadow-2xl">00</div>
-                <div class="text-3xl font-black tracking-tighter">86.AI</div>
+        <div class="max-w-4xl relative z-10">
+            <div class="flex items-center gap-2 md:gap-3 justify-center mb-6 md:mb-10">
+                <div class="w-10 h-10 md:w-14 md:h-14 bg-black rounded-xl md:rounded-[1.25rem] flex items-center justify-center text-white font-bold text-xl md:text-3xl shadow-xl">00</div>
+                <div class="text-xl md:text-3xl font-black tracking-tighter">86.AI</div>
             </div>
-            <h1 class="text-6xl md:text-8xl font-black tracking-tight mb-8 leading-[1.1]">
+            <h1 class="text-4xl md:text-8xl font-black tracking-tight mb-6 md:mb-8 leading-[1.2] md:leading-[1.1]">
                 定义 <span class="text-blue-600">“AI+”</span> <br> 商业新范式
             </h1>
-            <p class="text-xl md:text-2xl text-slate-500 leading-relaxed max-w-2xl mx-auto">
-                我们正在重塑传统企业服务的交付逻辑：<br>
-                <span class="text-slate-900 font-bold underline decoration-blue-500/30 underline-offset-8">拒绝工具堆砌，交付业务结果。</span>
+            <p class="text-lg md:text-2xl text-slate-500 leading-relaxed max-w-xl mx-auto px-4">
+                重塑企业服务交付逻辑：<br>
+                <span class="text-slate-900 font-bold underline decoration-blue-500/30 underline-offset-4 md:underline-offset-8">拒绝工具堆砌，交付业务结果。</span>
             </p>
-            <div class="mt-20 opacity-30 animate-bounce">
-                <i data-lucide="chevron-down" size="32" class="mx-auto"></i>
+            <div class="mt-16 md:mt-20 opacity-30 animate-bounce">
+                <i data-lucide="chevron-down" size="24" class="mx-auto"></i>
             </div>
         </div>
     </section>
 
-    <!-- 2. Vision & Values (深色沉浸) -->
-    <section id="vision" class="py-32 bg-slate-900 text-white overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+    <!-- 2. Vision & Values (Responsive Grid) -->
+    <section id="vision" class="py-20 md:py-32 bg-slate-900 text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 items-center">
                 <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-8 border border-blue-500/20">Mission & Vision</div>
-                    <h2 class="text-4xl md:text-5xl font-bold mb-12 leading-tight">让每家企业都能拥有<br>自己的 AI <span class="text-blue-400">“超级员工”</span></h2>
-                    <div class="space-y-12">
-                        <div class="flex gap-8">
-                            <div class="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-400 shrink-0"><i data-lucide="target" size="28"></i></div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-6 border border-blue-500/20">Mission & Vision</div>
+                    <h2 class="text-3xl md:text-5xl font-bold mb-10 leading-tight">让每家企业都能拥有<br>自己的 AI <span class="text-blue-400">“超级员工”</span></h2>
+                    <div class="space-y-8 md:y-12">
+                        <div class="flex gap-4 md:gap-8">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-400 shrink-0"><i data-lucide="target" size="24"></i></div>
                             <div>
-                                <h3 class="text-slate-400 font-bold mb-2 uppercase tracking-widest text-xs">使命 / MISSION</h3>
-                                <p class="text-xl font-medium text-slate-200">将前沿 AI 能力转化为核心生产力，驱动企业商业价值持续跃升。</p>
+                                <h3 class="text-slate-400 font-bold mb-1 uppercase tracking-widest text-[10px]">使命 / MISSION</h3>
+                                <p class="text-lg md:text-xl font-medium text-slate-200">将 AI 能力转化为核心生产力，驱动企业价值跃升。</p>
                             </div>
                         </div>
-                        <div class="flex gap-8">
-                            <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400 shrink-0"><i data-lucide="users" size="28"></i></div>
+                        <div class="flex gap-4 md:gap-8">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400 shrink-0"><i data-lucide="users" size="24"></i></div>
                             <div>
-                                <h3 class="text-slate-400 font-bold mb-2 uppercase tracking-widest text-xs">愿景 / VISION</h3>
-                                <p class="text-xl font-medium text-slate-200">成为企业在 AI 时代最值得信赖的共生伙伴。</p>
+                                <h3 class="text-slate-400 font-bold mb-1 uppercase tracking-widest text-[10px]">愿景 / VISION</h3>
+                                <p class="text-lg md:text-xl font-medium text-slate-200">成为企业在 AI 时代最值得信赖的共生伙伴。</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 价值观 Grid -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
-                        <div class="text-blue-400 font-bold text-3xl mb-1">创新</div>
-                        <div class="text-[10px] text-slate-500 font-bold tracking-widest mb-4">以终为始</div>
-                        <p class="text-xs text-slate-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity">拒绝技术堆砌，确保创新转化为客户竞争优势。</p>
-                    </div>
-                    <div class="p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
-                        <div class="text-emerald-400 font-bold text-3xl mb-1">敏捷</div>
-                        <div class="text-[10px] text-slate-500 font-bold tracking-widest mb-4">拥抱变化</div>
-                        <p class="text-xs text-slate-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity">保持极度敏锐的市场嗅觉与初创者的响应速度。</p>
-                    </div>
-                    <div class="p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
-                        <div class="text-orange-400 font-bold text-3xl mb-1">信赖</div>
-                        <div class="text-[10px] text-slate-500 font-bold tracking-widest mb-4">坚守底线</div>
-                        <p class="text-xs text-slate-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity">数据安全是生命线，严守数据伦理与合规边界。</p>
-                    </div>
-                    <div class="p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
-                        <div class="text-purple-400 font-bold text-3xl mb-1">共生</div>
-                        <div class="text-[10px] text-slate-500 font-bold tracking-widest mb-4">互相成就</div>
-                        <p class="text-xs text-slate-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity">不只交付项目，更致力于成为长期外部智囊。</p>
-                    </div>
+                <!-- 价值观 Grid (Mobile 2x2 or 1x4) -->
+                <div class="grid grid-cols-2 gap-3 md:gap-4">
+                    <template x-for="val in [
+                        {t:'创新', d:'以终为始', c:'blue', p:'拒绝盲目堆砌技术，确保优势转化。'},
+                        {t:'敏捷', d:'拥抱变化', c:'emerald', p:'敏锐市场嗅觉，初创者响应速度。'},
+                        {t:'信赖', d:'坚守底线', c:'orange', p:'数据安全是生命线，严守合规边界。'},
+                        {t:'共生', d:'互相成就', c:'purple', p:'不只是交付，更是长期外部智囊。'}
+                    ]">
+                        <div class="p-6 md:p-8 rounded-2xl md:rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+                            <div :class="'text-' + val.c + '-400'" class="font-bold text-2xl md:text-3xl mb-1" x-text="val.t"></div>
+                            <div class="text-[10px] text-slate-500 font-bold tracking-widest" x-text="val.d"></div>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 3. Architecture (1 + 6 核心架构) -->
-    <section id="architecture" class="py-32">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-24">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-6">Product & Services</div>
-                <h2 class="text-5xl font-bold mb-6 italic tracking-tight">1 + 6 全链路智能赋能</h2>
-                <p class="text-slate-500 text-lg">我们要构建的不是一套软件，而是一个能进化的企业 AI 生命周期。</p>
+    <!-- 3. Architecture (Responsive Flex/Grid) -->
+    <section id="architecture" class="py-20 md:py-32 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 md:mb-24">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4">Product & Services</div>
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 italic tracking-tight leading-tight">1 + 6 全链路智能赋能</h2>
+                <p class="text-slate-500 text-sm md:text-lg">构建能进化的企业 AI 生命周期</p>
             </div>
 
-            <!-- Phase 1: Brain (核心地基) -->
-            <div class="mb-12 bg-white rounded-[3rem] p-10 md:p-16 border border-slate-200 shadow-2xl shadow-blue-500/5 relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-12 opacity-5"><i data-lucide="activity" size="120"></i></div>
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-                    <div class="lg:col-span-4">
-                        <div class="w-24 h-24 bg-blue-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-600/30 mb-10 text-white">
-                            <i data-lucide="brain" size="48"></i>
+            <!-- Phase 1: Brain (Stacked on Mobile) -->
+            <div class="mb-8 md:mb-12 bg-white rounded-[2rem] md:rounded-[3rem] p-6 md:p-16 border border-slate-200 shadow-2xl shadow-blue-500/5 relative overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center relative z-10">
+                    <div class="lg:col-span-4 text-center lg:text-left">
+                        <div class="w-16 h-16 md:w-24 md:h-24 bg-blue-600 rounded-2xl md:rounded-[2rem] flex items-center justify-center shadow-xl shadow-blue-600/30 mb-6 md:mb-10 text-white mx-auto lg:mx-0">
+                            <i data-lucide="brain" class="w-8 h-8 md:w-12 md:h-12"></i>
                         </div>
-                        <h3 class="text-4xl font-bold mb-3">核心智脑</h3>
-                        <p class="text-blue-600 font-bold text-sm uppercase tracking-[0.2em] mb-8">企业级专属 RAG 知识库</p>
-                        <ul class="space-y-4 text-slate-600 font-medium">
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="text-emerald-500 w-5 h-5"></i> 核心数据私有化沉淀</li>
-                            <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="text-emerald-500 w-5 h-5"></i> 隐性经验显性化采集</li>
-                        </ul>
+                        <h3 class="text-2xl md:text-4xl font-bold mb-2">核心智脑</h3>
+                        <p class="text-blue-600 font-bold text-[10px] md:text-sm uppercase tracking-[0.2em] mb-6">企业级专属 RAG 知识库</p>
                     </div>
                     <div class="lg:col-span-8">
-                        <div class="bg-slate-50 rounded-[2rem] p-10 border border-slate-100">
-                            <p class="text-xl text-slate-600 leading-relaxed italic">
-                                “不仅仅是存储文档的云盘，而是企业的<span class="text-slate-900 font-bold">‘数字大脑’</span>。它是所有上层 Agent 的智慧源头，确保每一次 AI 的产出都精准符合企业的品牌调性与业务逻辑。”
+                        <div class="bg-slate-50 rounded-2xl md:rounded-[2rem] p-6 md:p-10 border border-slate-100">
+                            <p class="text-base md:text-xl text-slate-600 leading-relaxed italic">
+                                “不仅仅是存储文档的云盘，而是企业的<span class="text-slate-900 font-bold">‘数字大脑’</span>。采集创始人隐性经验，确保 AI 产出精准符合品牌调性。”
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Phase 2: Agents (六位专家团交互) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- 控制面板 -->
-                <div class="lg:col-span-4 flex flex-col gap-3">
+            <!-- Phase 2: Agents (Grid Selection + Detail Window) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+                <!-- 移动端采用网格菜单 -->
+                <div class="lg:col-span-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-2 md:gap-3">
                     <template x-for="(agent, id) in agents" :key="id">
                         <button 
                             @click="activeAgent = id"
-                            :class="activeAgent === id ? 'bg-white border-blue-500/20 shadow-xl ring-1 ring-blue-500/5 translate-x-2' : 'bg-white/50 border-transparent hover:bg-white'"
-                            class="flex items-center gap-5 p-5 rounded-[1.5rem] border transition-all text-left group"
+                            :class="activeAgent === id ? 'bg-white border-blue-500/20 shadow-lg ring-1 ring-blue-500/5 lg:translate-x-2' : 'bg-white/50 border-transparent'"
+                            class="flex items-center gap-3 md:gap-5 p-3 md:p-5 rounded-xl md:rounded-[1.5rem] border transition-all text-left"
                         >
-                            <div :class="activeAgent === id ? 'bg-' + agent.color + '-500 text-white' : 'bg-slate-100 text-slate-400'" class="p-3 rounded-xl transition-all">
-                                <i :data-lucide="agent.icon" class="w-6 h-6"></i>
+                            <div :class="activeAgent === id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'" class="p-2 md:p-3 rounded-lg md:rounded-xl shrink-0 transition-all">
+                                <i :data-lucide="agent.icon" class="w-4 h-4 md:w-6 md:h-6"></i>
                             </div>
-                            <div>
-                                <div class="font-bold text-base" :class="activeAgent === id ? 'text-slate-900' : 'text-slate-500'" x-text="agent.title"></div>
-                                <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400" x-text="id"></div>
+                            <div class="overflow-hidden">
+                                <div class="font-bold text-xs md:text-base truncate" :class="activeAgent === id ? 'text-slate-900' : 'text-slate-500'" x-text="agent.title"></div>
+                                <div class="text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-slate-400 hidden sm:block" x-text="id"></div>
                             </div>
                         </button>
                     </template>
                 </div>
 
-                <!-- 详情展示 (终端感设计) -->
+                <!-- 详情展示 -->
                 <div class="lg:col-span-8">
-                    <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl overflow-hidden h-full flex flex-col terminal-window">
-                        <div class="h-10 w-full bg-slate-50 border-b border-slate-100 flex items-center px-6 gap-2">
-                            <div class="w-3 h-3 rounded-full bg-red-400/20"></div>
-                            <div class="w-3 h-3 rounded-full bg-orange-400/20"></div>
-                            <div class="w-3 h-3 rounded-full bg-emerald-400/20"></div>
-                            <div class="ml-4 text-[10px] text-slate-400 font-mono font-bold uppercase tracking-tighter" x-text="'AGENT_SYSTEM / ' + activeAgent"></div>
+                    <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden h-full flex flex-col terminal-window">
+                        <div class="h-8 md:h-10 w-full bg-slate-50 border-b border-slate-100 flex items-center px-4 md:px-6 gap-2">
+                            <div class="w-2 h-2 rounded-full bg-red-400/30"></div>
+                            <div class="w-2 h-2 rounded-full bg-emerald-400/30"></div>
+                            <div class="ml-2 md:ml-4 text-[8px] md:text-[10px] text-slate-400 font-mono font-bold uppercase tracking-tighter" x-text="'AGENT_SYS / ' + activeAgent"></div>
                         </div>
-                        <div class="p-12 flex-1" x-data="{}" x-effect="lucide.createIcons()">
-                            <div class="mb-10 flex flex-wrap gap-3">
-                                <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold border border-blue-100 uppercase tracking-widest">Digital Expert</span>
-                                <span class="px-3 py-1 bg-slate-50 text-slate-500 rounded-full text-[10px] font-bold border border-slate-200 uppercase tracking-widest">RAG Connected</span>
+                        <div class="p-6 md:p-12 flex-1" x-effect="lucide.createIcons()">
+                            <div class="mb-6 md:mb-10 flex gap-2">
+                                <span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-[8px] md:text-[10px] font-bold border border-blue-100 uppercase tracking-widest">Digital Expert</span>
                             </div>
 
-                            <h4 class="text-sm font-bold text-blue-600 mb-3" x-text="agents[activeAgent].sub"></h4>
-                            <h3 class="text-4xl font-bold mb-10 tracking-tight" x-text="agents[activeAgent].role"></h3>
+                            <h4 class="text-[10px] md:text-sm font-bold text-blue-600 mb-1 md:mb-2" x-text="agents[activeAgent].sub"></h4>
+                            <h3 class="text-xl md:text-4xl font-bold mb-6 md:mb-10 tracking-tight" x-text="agents[activeAgent].role"></h3>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-slate-50 pt-10">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-slate-50 pt-6 md:pt-10">
                                 <div>
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6">解决痛点 / Pain Point</div>
-                                    <p class="text-slate-900 font-semibold text-xl leading-relaxed" x-text="agents[activeAgent].pain"></p>
+                                    <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">解决痛点 / Pain Point</div>
+                                    <p class="text-slate-900 font-semibold text-base md:text-xl leading-relaxed" x-text="agents[activeAgent].pain"></p>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6">核心能力 / Core Ability</div>
-                                    <p class="text-slate-500 leading-relaxed text-lg" x-text="agents[activeAgent].ability"></p>
+                                    <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">核心能力 / Core Ability</div>
+                                    <p class="text-slate-500 leading-relaxed text-sm md:text-lg" x-text="agents[activeAgent].ability"></p>
                                 </div>
                             </div>
                         </div>
-                        <div class="p-8 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center">
-                            <div class="flex items-center gap-4">
-                                <div class="flex -space-x-3">
-                                    <div class="w-8 h-8 rounded-full bg-blue-100 border-2 border-white"></div>
-                                    <div class="w-8 h-8 rounded-full bg-indigo-100 border-2 border-white"></div>
-                                    <div class="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-400">+3</div>
-                                </div>
-                                <span class="text-[10px] font-black text-slate-400 tracking-widest uppercase">Expert Profile Ready</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-emerald-500 font-bold text-xs">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                状态：全时就绪
+                        <div class="p-6 md:p-8 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center">
+                            <div class="flex items-center gap-2 text-emerald-500 font-bold text-[10px] md:text-xs">
+                                <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                状态：24/7 全时就绪
                             </div>
                         </div>
                     </div>
@@ -257,71 +238,49 @@
         </div>
     </section>
 
-    <!-- 4. Advantages (便当盒布局) -->
-    <section id="advantage" class="py-32 bg-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-end gap-10 mb-20">
-                <div class="max-w-xl text-left">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-6">Why Choose Us</div>
-                    <h2 class="text-5xl font-bold italic tracking-tight leading-tight">核心优势</h2>
-                </div>
-                <div class="text-slate-100 font-black text-8xl opacity-60 hidden lg:block">0086_PRO</div>
+    <!-- 4. Advantages (Stacked on Mobile) -->
+    <section id="advantage" class="py-20 md:py-32 bg-white px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-12 md:mb-20">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 md:mb-6">Why Us</div>
+                <h2 class="text-3xl md:text-5xl font-bold italic tracking-tight">核心优势</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div class="md:col-span-2 p-12 rounded-[3rem] bg-slate-50 border border-slate-100 bento-card">
-                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-10 shadow-sm text-blue-600"><i data-lucide="shield-check" size="32"></i></div>
-                    <h3 class="text-2xl font-bold mb-4">“咨询 + 技术” 双引擎驱动</h3>
-                    <p class="text-slate-500 leading-relaxed text-lg">
-                        先梳理业务，再部署 AI。我们深具“商业咨询基因”，先剖析业务痛点，再将模糊需求翻译为精准的技术方案，确保交付物完全契合业务逻辑。
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                <!-- Large Card -->
+                <div class="md:col-span-2 p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] bg-slate-50 border border-slate-100 bento-card">
+                    <div class="w-12 h-12 md:w-16 md:h-16 bg-white rounded-xl md:rounded-2xl flex items-center justify-center mb-6 md:mb-10 shadow-sm text-blue-600"><i data-lucide="shield-check" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-4">“咨询 + 技术” 双引擎驱动</h3>
+                    <p class="text-slate-500 leading-relaxed text-sm md:text-lg">
+                        先梳理业务，再部署 AI。我们深具“商业咨询基因”，将模糊需求翻译为精准的技术方案，确保交付物契合业务逻辑。
                     </p>
                 </div>
-                <!-- Card 2 -->
-                <div class="p-12 rounded-[3rem] bg-blue-600 text-white bento-card">
-                    <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-10 border border-white/20 text-white"><i data-lucide="zap" size="32"></i></div>
-                    <h3 class="text-2xl font-bold mb-4">零门槛开箱即用</h3>
-                    <p class="text-blue-100 leading-relaxed">
-                        通过自然语言交互，只需像聊天一样对话，无需培训即可指挥 Agent 完成专家级任务。
+                <!-- Dark Card -->
+                <div class="p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] bg-blue-600 text-white bento-card">
+                    <div class="w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-xl md:rounded-2xl flex items-center justify-center mb-6 md:mb-10 border border-white/20 text-white"><i data-lucide="zap" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-4">零门槛开箱即用</h3>
+                    <p class="text-blue-100 text-sm leading-relaxed">
+                        复杂技术简单化，像聊天一样对话，无需额外培训即可指挥 Agent 完成任务。
                     </p>
-                </div>
-                <!-- Card 3 -->
-                <div class="p-12 rounded-[3rem] bg-white border border-slate-200 bento-card shadow-sm">
-                    <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-10 text-slate-900"><i data-lucide="activity" size="32"></i></div>
-                    <h3 class="text-2xl font-bold mb-4">动态迭代调优</h3>
-                    <p class="text-slate-500 leading-relaxed">
-                        交付只是开始，共生才是目的。持续进行模型调优与策略迭代，确保您的“超级员工”持续增值。
-                    </p>
-                </div>
-                <!-- Card 4 -->
-                <div class="md:col-span-2 p-12 rounded-[3rem] bg-slate-900 text-white bento-card relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-12 opacity-10"><i data-lucide="globe" size="160"></i></div>
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-10 border border-white/10 text-blue-400"><i data-lucide="radar" size="32"></i></div>
-                        <h3 class="text-2xl font-bold mb-4">全球化技术视野</h3>
-                        <p class="text-slate-400 leading-relaxed max-w-xl text-lg">
-                            同步硅谷节拍，保持极度敏锐。我们是您的前沿技术雷达，第一时间将全球最前沿的 AI 技术迭代进您的产品。
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 5. Footer -->
-    <footer class="py-32 bg-black text-white text-center px-6 relative overflow-hidden">
+    <!-- 5. Footer (Center Aligned) -->
+    <footer class="py-20 md:py-32 bg-black text-white text-center px-4 relative overflow-hidden">
         <div class="max-w-4xl mx-auto relative z-10">
-            <h2 class="text-4xl md:text-6xl font-black mb-12 tracking-tight">在 AI 浪潮中 <br> <span class="text-blue-600">共同进化</span></h2>
-            <div class="w-full h-px bg-white/10 my-16"></div>
-            <div class="flex flex-col md:flex-row justify-between items-center gap-10 text-slate-500">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-black font-black text-lg shadow-xl shadow-white/5">00</div>
-                    <div class="text-left leading-tight">
+            <h2 class="text-3xl md:text-6xl font-black mb-10 md:mb-12 tracking-tight leading-tight">在 AI 浪潮中 <br> <span class="text-blue-600">共同进化</span></h2>
+            <div class="w-full h-px bg-white/10 my-10 md:my-16"></div>
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 md:gap-10 text-slate-500">
+                <div class="flex flex-col md:flex-row items-center gap-4">
+                    <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-black font-black text-lg">00</div>
+                    <div class="text-center md:text-left leading-tight">
                         <div class="text-white font-bold tracking-widest text-sm uppercase">0086.AI</div>
-                        <div class="text-[9px] font-bold uppercase tracking-[0.2em]">Building Smart, Growing Fast</div>
+                        <div class="text-[9px] font-bold uppercase tracking-[0.2em] mt-1">Building Smart, Growing Fast</div>
                     </div>
                 </div>
-                <div class="text-[10px] font-black tracking-[0.3em] uppercase opacity-40">
+                <div class="text-[9px] font-black tracking-[0.3em] uppercase opacity-40">
                     © 2026 Precision Delivery System. All Rights Reserved.
                 </div>
             </div>
@@ -329,10 +288,7 @@
     </footer>
 
     <script>
-        // 渲染图标
-        window.onload = () => {
-            lucide.createIcons();
-        };
+        window.onload = () => { lucide.createIcons(); };
     </script>
 </body>
 </html>
