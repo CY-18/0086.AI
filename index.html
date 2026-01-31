@@ -2,26 +2,63 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 视口设置：强制禁止用户缩放，适配刘海屏 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>0086.AI | 数字化业务介绍手册</title>
     
-    <!-- 核心技术栈 -->
+    <!-- 1. 样式重置与核心库 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Google 字体 -->
+    <!-- 2. 字体优化：使用 swap 策略，优先显示内容 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     
+    <!-- 3. Tailwind 自定义配置 (直接注入，防止外部文件加载失败) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#2563EB',
+                            dark: '#0F172A',
+                        }
+                    },
+                    fontFamily: {
+                        // 优先使用 Inter，其次使用系统原生字体（适配 iOS/Android/Windows）
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 4. 防御性 CSS (解决各种手机端疑难杂症) -->
     <style>
+        /* 核心修复：防止 alpine 加载前的闪烁 */
         [x-cloak] { display: none !important; }
-        body { 
-            font-family: 'Inter', -apple-system, sans-serif;
-            scroll-behavior: smooth;
-            -webkit-font-smoothing: antialiased;
+
+        /* 核心修复：防止 iOS 点击高亮背景色 */
+        * { -webkit-tap-highlight-color: transparent; }
+
+        /* 核心修复：强制禁止横向滚动，解决“页面摇晃” */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+            -webkit-font-smoothing: antialiased; /* iOS 字体抗锯齿 */
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* 滚动显影动画预设 */
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* 动画类 */
         .reveal {
             opacity: 0;
             transform: translateY(20px);
@@ -32,7 +69,6 @@
             transform: translateY(0);
         }
 
-        /* 呼吸灯效果 */
         @keyframes pulse-soft {
             0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 20px rgba(37, 99, 235, 0.4); }
             50% { transform: scale(1.05); opacity: 0.8; box-shadow: 0 0 40px rgba(37, 99, 235, 0.6); }
@@ -41,40 +77,22 @@
             animation: pulse-soft 3s infinite ease-in-out;
         }
 
-        /* 漂浮装饰球 */
+        /* 装饰球：强制 z-index 为负，防止遮挡点击 */
         .orb {
             position: absolute;
             border-radius: 50%;
             filter: blur(80px);
-            z-index: 0;
+            z-index: -1; 
             pointer-events: none;
         }
 
-        /* 卡片悬停增强 */
-        .bento-card {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .bento-card:hover {
-            transform: translateY(-8px) scale(1.01);
+        /* 终端视窗阴影 */
+        .terminal-window {
+            box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.08);
         }
     </style>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            blue: '#2563EB',
-                            dark: '#0F172A',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
 </head>
-<body class="bg-[#F8FAFC] text-brand-dark overflow-x-hidden" x-data="{ 
+<body class="bg-[#F8FAFC] text-brand-dark" x-data="{ 
     activeAgent: 'strategy',
     agents: {
         strategy: {
@@ -134,18 +152,18 @@
     }
 }">
 
-    <!-- 背景装饰球 -->
-    <div class="orb w-96 h-96 bg-blue-100 top-[-10%] left-[-10%]" style="opacity: 0.4;"></div>
-    <div class="orb w-80 h-80 bg-indigo-100 bottom-[20%] right-[-5%]" style="opacity: 0.3;"></div>
+    <!-- 背景装饰球 (定位修正，防止溢出) -->
+    <div class="orb w-64 h-64 md:w-96 md:h-96 bg-blue-100 top-0 left-[-20%]" style="opacity: 0.4;"></div>
+    <div class="orb w-64 h-64 md:w-80 md:h-80 bg-indigo-100 bottom-[10%] right-[-20%]" style="opacity: 0.3;"></div>
 
-    <!-- 1. Intro Section -->
-    <section id="intro" class="min-h-screen flex flex-col justify-center items-center px-4 text-center bg-white relative overflow-hidden">
+    <!-- 1. Intro Section (使用 dvh 解决移动端高度问题) -->
+    <section id="intro" class="min-h-[100dvh] flex flex-col justify-center items-center px-4 text-center bg-white/0 relative z-10">
         <div class="max-w-4xl relative z-10 reveal">
             <div class="flex items-center gap-3 justify-center mb-10">
                 <div class="w-14 h-14 bg-black rounded-[1.25rem] flex items-center justify-center text-white font-bold text-3xl shadow-2xl hover:rotate-[10deg] transition-transform">00</div>
                 <div class="text-3xl font-black tracking-tighter">86.AI</div>
             </div>
-            <h1 class="text-5xl md:text-8xl font-black tracking-tight mb-8 leading-[1.1]">
+            <h1 class="text-5xl md:text-8xl font-black tracking-tight mb-8 leading-[1.15]">
                 定义 <span class="text-brand-blue">“AI+”</span> <br> 商业新范式
             </h1>
             <p class="text-lg md:text-2xl text-slate-500 leading-relaxed max-w-xl mx-auto mb-12">
@@ -159,21 +177,21 @@
     </section>
 
     <!-- 2. Vision & Values -->
-    <section id="vision" class="py-24 md:py-32 bg-slate-900 text-white relative">
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+    <section id="vision" class="py-24 md:py-32 bg-slate-900 text-white relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-20 items-center">
                 <div class="reveal">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-6 border border-blue-500/20">Mission & Vision</div>
                     <h2 class="text-4xl md:text-5xl font-bold mb-12 italic leading-tight">将前沿 AI 能力 <br>转化为 <span class="text-blue-400">核心生产力</span></h2>
                     <div class="space-y-10">
-                        <div class="flex gap-6 hover:translate-x-2 transition-transform">
+                        <div class="flex gap-6">
                             <div class="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-400 shrink-0"><i data-lucide="target" size="28"></i></div>
                             <div>
                                 <h3 class="text-slate-400 font-bold mb-1 text-xs tracking-widest uppercase">使命 / MISSION</h3>
                                 <p class="text-xl font-medium text-slate-200">深度整合业务流，驱动企业价值持续跃升。</p>
                             </div>
                         </div>
-                        <div class="flex gap-6 hover:translate-x-2 transition-transform">
+                        <div class="flex gap-6">
                             <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400 shrink-0"><i data-lucide="users" size="28"></i></div>
                             <div>
                                 <h3 class="text-slate-400 font-bold mb-1 text-xs tracking-widest uppercase">愿景 / VISION</h3>
@@ -183,15 +201,15 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 reveal" style="transition-delay: 200ms;">
+                <div class="grid grid-cols-2 gap-3 md:gap-4 reveal" style="transition-delay: 200ms;">
                     <template x-for="val in [
                         {t:'创新', d:'以终为始', c:'blue'},
                         {t:'敏捷', d:'拥抱变化', c:'emerald'},
                         {t:'信赖', d:'坚守底线', c:'orange'},
                         {t:'共生', d:'互相成就', c:'purple'}
                     ]">
-                        <div class="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all cursor-default">
-                            <div :class="'text-' + val.c + '-400'" class="font-bold text-3xl mb-1" x-text="val.t"></div>
+                        <div class="p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                            <div :class="'text-' + val.c + '-400'" class="font-bold text-2xl md:text-3xl mb-1" x-text="val.t"></div>
                             <div class="text-[10px] text-slate-500 font-bold tracking-widest" x-text="val.d"></div>
                         </div>
                     </template>
@@ -201,28 +219,28 @@
     </section>
 
     <!-- 3. Architecture -->
-    <section id="architecture" class="py-24 md:py-40 px-4 bg-white relative">
+    <section id="architecture" class="py-24 md:py-40 px-4 bg-white relative z-10">
         <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-24 reveal">
+            <div class="text-center mb-20 md:mb-24 reveal">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4">Product & Services</div>
                 <h2 class="text-4xl md:text-6xl font-bold mb-6 italic tracking-tight underline decoration-blue-500/20 underline-offset-8">1 + 6 全链路赋能</h2>
                 <p class="text-slate-500 text-lg">我们要构建的是一个能进化的企业 AI 生命周期</p>
             </div>
 
-            <!-- Brain (Pulse Animation) -->
-            <div class="max-w-5xl mx-auto mb-20 reveal">
-                <div class="bg-white rounded-[3rem] p-10 md:p-16 border border-slate-200 shadow-2xl shadow-blue-500/5 relative overflow-hidden group">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+            <!-- Brain -->
+            <div class="max-w-5xl mx-auto mb-16 md:mb-20 reveal">
+                <div class="bg-white rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-16 border border-slate-200 shadow-2xl shadow-blue-500/5 relative overflow-hidden group">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center relative z-10">
                         <div class="lg:col-span-4 text-center lg:text-left">
-                            <div class="w-24 h-24 bg-brand-blue rounded-[2rem] flex items-center justify-center shadow-2xl animate-pulse-soft mb-10 text-white mx-auto lg:mx-0">
-                                <i data-lucide="brain" size="44"></i>
+                            <div class="w-20 h-20 md:w-24 md:h-24 bg-brand-blue rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center shadow-2xl animate-pulse-soft mb-8 md:mb-10 text-white mx-auto lg:mx-0">
+                                <i data-lucide="brain" class="w-10 h-10 md:w-11 md:h-11"></i>
                             </div>
                             <h3 class="text-3xl md:text-4xl font-bold mb-3">核心智脑</h3>
                             <p class="text-brand-blue font-bold text-xs uppercase tracking-[0.2em] mb-6">企业级专属 RAG 知识库</p>
                         </div>
                         <div class="lg:col-span-8">
-                            <div class="bg-slate-50 rounded-[2.5rem] p-8 md:p-12 border border-slate-100 group-hover:bg-blue-50 transition-colors duration-500">
-                                <p class="text-xl md:text-2xl text-slate-600 leading-relaxed italic">
+                            <div class="bg-slate-50 rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 border border-slate-100 group-hover:bg-blue-50 transition-colors duration-500">
+                                <p class="text-lg md:text-2xl text-slate-600 leading-relaxed italic">
                                     “不仅仅是云盘，而是企业的<span class="text-slate-900 font-bold">‘数字大脑’</span>。沉淀隐性经验，确保 AI 产出精准符合品牌调性。”
                                 </p>
                             </div>
@@ -231,35 +249,34 @@
                 </div>
             </div>
 
-            <!-- Agents Dash (Smooth Transitions) -->
+            <!-- Agents Dash -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 reveal" style="transition-delay: 100ms;">
                 <div class="lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-3">
                     <template x-for="(agent, id) in agents" :key="id">
                         <button 
                             @click="activeAgent = id"
-                            :class="activeAgent === id ? 'bg-white border-blue-500/30 shadow-2xl ring-1 ring-blue-500/5 lg:translate-x-4' : 'bg-slate-50 border-transparent hover:bg-white hover:border-slate-200'"
-                            class="flex items-center gap-4 p-5 rounded-[1.5rem] border transition-all duration-500 text-left"
+                            :class="activeAgent === id ? 'bg-white border-blue-500/30 shadow-xl ring-1 ring-blue-500/5 lg:translate-x-4' : 'bg-slate-50 border-transparent hover:bg-white hover:border-slate-200'"
+                            class="flex items-center gap-3 md:gap-4 p-4 md:p-5 rounded-[1.5rem] border transition-all duration-300 text-left"
                         >
-                            <div :class="activeAgent === id ? 'bg-brand-blue text-white shadow-lg' : 'bg-white text-slate-400'" class="p-3 rounded-xl transition-all duration-500">
-                                <i :data-lucide="agent.icon" class="w-6 h-6"></i>
+                            <div :class="activeAgent === id ? 'bg-brand-blue text-white shadow-lg' : 'bg-white text-slate-400'" class="p-2 md:p-3 rounded-xl transition-all duration-300 shrink-0">
+                                <i :data-lucide="agent.icon" class="w-5 h-5 md:w-6 md:h-6"></i>
                             </div>
                             <div class="overflow-hidden">
-                                <div class="font-bold text-sm md:text-base truncate" :class="activeAgent === id ? 'text-slate-900' : 'text-slate-500'" x-text="agent.title"></div>
+                                <div class="font-bold text-xs md:text-base truncate" :class="activeAgent === id ? 'text-slate-900' : 'text-slate-500'" x-text="agent.title"></div>
                             </div>
                         </button>
                     </template>
                 </div>
 
                 <div class="lg:col-span-8 h-full">
-                    <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl overflow-hidden h-full flex flex-col terminal-window">
-                        <div class="h-10 w-full bg-slate-50 border-b border-slate-100 flex items-center px-6 gap-2">
+                    <div class="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-slate-200 shadow-2xl overflow-hidden h-full flex flex-col terminal-window min-h-[400px]">
+                        <div class="h-10 w-full bg-slate-50 border-b border-slate-100 flex items-center px-6 gap-2 shrink-0">
                             <div class="w-3 h-3 rounded-full bg-red-400/20"></div>
                             <div class="w-3 h-3 rounded-full bg-emerald-400/20"></div>
                             <div class="ml-4 text-[10px] text-slate-400 font-mono font-bold uppercase" x-text="'AGENT_SYS / ' + activeAgent"></div>
                         </div>
                         
-                        <!-- Alpine Transition for Content -->
-                        <div class="p-8 md:p-12 flex-1 relative min-h-[400px]">
+                        <div class="p-8 md:p-12 flex-1 relative">
                             <template x-for="(agent, id) in agents" :key="id">
                                 <div 
                                     x-show="activeAgent === id" 
@@ -272,17 +289,17 @@
                                     class="h-full flex flex-col justify-center"
                                     x-effect="if(activeAgent === id) { lucide.createIcons(); }"
                                 >
-                                    <h4 class="text-sm font-bold text-brand-blue mb-2" x-text="agent.sub"></h4>
-                                    <h3 class="text-3xl md:text-5xl font-bold mb-10 tracking-tight" x-text="agent.role"></h3>
+                                    <h4 class="text-xs md:text-sm font-bold text-brand-blue mb-2" x-text="agent.sub"></h4>
+                                    <h3 class="text-2xl md:text-5xl font-bold mb-8 md:mb-10 tracking-tight leading-tight" x-text="agent.role"></h3>
                                     
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-slate-50 pt-10">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 border-t border-slate-50 pt-8 md:pt-10">
                                         <div>
-                                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">解决痛点 / PAIN POINT</div>
-                                            <p class="text-slate-900 font-semibold text-xl md:text-2xl leading-relaxed" x-text="agent.pain"></p>
+                                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 md:mb-4">解决痛点 / PAIN POINT</div>
+                                            <p class="text-slate-900 font-semibold text-lg md:text-2xl leading-relaxed" x-text="agent.pain"></p>
                                         </div>
                                         <div>
-                                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">核心能力 / CORE ABILITY</div>
-                                            <p class="text-slate-500 leading-relaxed text-lg" x-text="agent.ability"></p>
+                                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 md:mb-4">核心能力 / CORE ABILITY</div>
+                                            <p class="text-slate-500 leading-relaxed text-base md:text-lg" x-text="agent.ability"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -295,14 +312,14 @@
     </section>
 
     <!-- 4. Advantages -->
-    <section id="advantage" class="py-24 md:py-40 bg-slate-50 px-4 relative overflow-hidden">
+    <section id="advantage" class="py-24 md:py-40 bg-slate-50 px-4 relative overflow-hidden z-10">
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="mb-20 text-center reveal">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-6 shadow-sm">Why 0086.AI</div>
                 <h2 class="text-4xl md:text-6xl font-bold italic tracking-tight underline decoration-blue-500/20 underline-offset-8">核心竞争优势</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 <template x-for="(adv, index) in [
                     {t:'“咨询 + 技术” 双引擎', d:'先梳理业务，再部署 AI。我们兼具商业咨询基因，将模糊需求翻译为精准方案，确保交付物契合业务逻辑。', i:'shield-check', c:'blue'},
                     {t:'零门槛“开箱即用”', d:'复杂的专业技术由我们解决。通过自然语言对话，无需额外培训即可指挥 Agent 完成专家级任务。', i:'zap', c:'blue', dark:true},
@@ -311,7 +328,7 @@
                 ]">
                     <div 
                         :class="adv.dark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'"
-                        class="p-10 md:p-16 rounded-[3rem] bento-card border border-slate-200 reveal shadow-sm"
+                        class="p-10 md:p-16 rounded-[2.5rem] md:rounded-[3rem] border border-slate-200 reveal shadow-sm transition-all hover:scale-[1.01]"
                         :style="'transition-delay: ' + (index * 150) + 'ms'"
                     >
                         <div :class="adv.dark ? 'bg-white/10 text-white border-white/20' : 'bg-slate-50 text-brand-blue border-slate-100'" class="w-16 h-16 rounded-2xl flex items-center justify-center mb-10 border shadow-sm">
@@ -326,16 +343,14 @@
     </section>
 
     <!-- 5. Footer -->
-    <footer class="py-32 bg-black text-white text-center px-4 relative overflow-hidden">
+    <footer class="py-32 bg-black text-white text-center px-4 relative overflow-hidden z-10">
         <div class="max-w-4xl mx-auto relative z-10 reveal">
             <h2 class="text-4xl md:text-7xl font-black mb-16 tracking-tight italic leading-tight">在 AI 浪潮中 <br> <span class="text-brand-blue animate-pulse">共同进化</span></h2>
             
             <div class="w-full h-px bg-white/10 my-16"></div>
             
-            <!-- 优化后的页脚品牌区 -->
             <div class="flex flex-col md:flex-row justify-between items-center gap-10">
                 <div class="flex items-center gap-4 md:gap-6">
-                    <!-- 品牌图形与文字横向整合，避免内容重复与奇怪的堆叠感 -->
                     <div class="w-10 h-10 md:w-14 md:h-14 bg-white rounded-xl md:rounded-2xl flex items-center justify-center text-black font-black text-lg md:text-2xl shadow-xl shadow-white/5 shrink-0">
                         00
                     </div>
@@ -353,7 +368,7 @@
     </footer>
 
     <script>
-        // 滚动显像逻辑 (Intersection Observer)
+        // 滚动显像逻辑
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -363,19 +378,17 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // 只触发一次，防止来回滚动时的闪烁
                 }
             });
         }, observerOptions);
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 初始化图标
             lucide.createIcons();
-            
-            // 绑定滚动观察
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         });
 
-        // 窗口加载完再次检查图标（应对 Alpine 渲染延迟）
+        // 双重保障图标加载
         window.addEventListener('load', () => lucide.createIcons());
     </script>
 </body>
